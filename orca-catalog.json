@@ -1,0 +1,74 @@
+{
+  "$schema": "https://raw.githubusercontent.com/stablyai/orca/main/docs/schemas/plugins/orca-catalog.v2.schema.json",
+  "catalogVersion": 2,
+  "name": "Tokyo Night for Orca",
+  "owner": "vale-c",
+  "plugins": [
+    {
+      "id": "vale-c.tokyonight",
+      "source": {
+        "kind": "git",
+        "url": "https://github.com/vale-c/orca-tokyonight.git",
+        "ref": "main"
+      },
+      "description": "App and terminal themes in all four Tokyo Night styles, Night, Storm, Moon and Day, with matching syntax colors.",
+      "categories": [
+        "themes",
+        "terminal-themes"
+      ],
+      "releases": [
+        {
+          "version": "1.0.0",
+          "commit": "2d63b93d40ccad1274286ed0643f71a979a66190",
+          "contentHash": "46359c7cdecc8bc6b338d1facd24643626a93938343e9ae30f6ef0465aad7d2e",
+          "execution": "data",
+          "minimumOrca": "1.4.245",
+          "name": "Tokyo Night for Orca",
+          "contributes": [
+            {
+              "kind": "themes",
+              "name": "Tokyo Night"
+            },
+            {
+              "kind": "themes",
+              "name": "Tokyo Night Storm"
+            },
+            {
+              "kind": "themes",
+              "name": "Tokyo Night Moon"
+            },
+            {
+              "kind": "themes",
+              "name": "Tokyo Night Day"
+            },
+            {
+              "kind": "terminalThemes",
+              "name": "Tokyo Night"
+            },
+            {
+              "kind": "terminalThemes",
+              "name": "Tokyo Night Storm"
+            },
+            {
+              "kind": "terminalThemes",
+              "name": "Tokyo Night Moon"
+            },
+            {
+              "kind": "terminalThemes",
+              "name": "Tokyo Night Day"
+            }
+          ],
+          "images": {
+            "cover": {
+              "path": "images/cover.png",
+              "alt": "Orca in the four Tokyo Night styles, Night, Storm, Moon and Day, each showing the sidebar and syntax-highlighted TypeScript",
+              "sha256": "372320852d62c6b8b131c3c8345c0a24edb0f743ce6354ecaec123e0c280020d",
+              "width": 1600,
+              "height": 1000
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
