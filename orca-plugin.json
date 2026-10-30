@@ -1,0 +1,66 @@
+{
+  "$schema": "https://raw.githubusercontent.com/stablyai/orca/main/docs/schemas/plugins/orca-plugin.v2.schema.json",
+  "manifestVersion": 2,
+  "id": "tokyonight",
+  "publisher": "vale-c",
+  "name": "Tokyo Night for Orca",
+  "version": "1.0.0",
+  "execution": "data",
+  "description": "App and terminal themes in all four Tokyo Night styles, Night, Storm, Moon and Day, with matching syntax colors.",
+  "license": "MIT",
+  "repository": "https://github.com/vale-c/orca-tokyonight",
+  "engines": {
+    "orca": ">=1.4.245"
+  },
+  "contributes": {
+    "themes": [
+      {
+        "id": "tokyonight-night",
+        "title": "Tokyo Night",
+        "path": "themes/tokyonight-night.json"
+      },
+      {
+        "id": "tokyonight-storm",
+        "title": "Tokyo Night Storm",
+        "path": "themes/tokyonight-storm.json"
+      },
+      {
+        "id": "tokyonight-moon",
+        "title": "Tokyo Night Moon",
+        "path": "themes/tokyonight-moon.json"
+      },
+      {
+        "id": "tokyonight-day",
+        "title": "Tokyo Night Day",
+        "path": "themes/tokyonight-day.json"
+      }
+    ],
+    "terminalThemes": [
+      {
+        "id": "tokyonight-night",
+        "title": "Tokyo Night",
+        "path": "terminal/tokyonight-night.json"
+      },
+      {
+        "id": "tokyonight-storm",
+        "title": "Tokyo Night Storm",
+        "path": "terminal/tokyonight-storm.json"
+      },
+      {
+        "id": "tokyonight-moon",
+        "title": "Tokyo Night Moon",
+        "path": "terminal/tokyonight-moon.json"
+      },
+      {
+        "id": "tokyonight-day",
+        "title": "Tokyo Night Day",
+        "path": "terminal/tokyonight-day.json"
+      }
+    ]
+  },
+  "capabilities": [],
+  "cover": {
+    "path": "images/cover.png",
+    "alt": "Orca in the four Tokyo Night styles, Night, Storm, Moon and Day, each showing the sidebar and syntax-highlighted TypeScript"
+  }
+}
