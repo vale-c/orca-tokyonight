@@ -18,6 +18,57 @@
       ],
       "releases": [
         {
+          "version": "1.1.0",
+          "commit": "67955d8f2f2989468a32b4886206ad0b63de5d05",
+          "contentHash": "11a22be87b6d42cd5351439ecefb4bcec056175811a8f6a3618b1781f5ee4b0b",
+          "execution": "data",
+          "minimumOrca": "1.4.245",
+          "name": "Tokyo Night for Orca",
+          "contributes": [
+            {
+              "kind": "themes",
+              "name": "Tokyo Night"
+            },
+            {
+              "kind": "themes",
+              "name": "Tokyo Night Storm"
+            },
+            {
+              "kind": "themes",
+              "name": "Tokyo Night Moon"
+            },
+            {
+              "kind": "themes",
+              "name": "Tokyo Night Day"
+            },
+            {
+              "kind": "terminalThemes",
+              "name": "Tokyo Night"
+            },
+            {
+              "kind": "terminalThemes",
+              "name": "Tokyo Night Storm"
+            },
+            {
+              "kind": "terminalThemes",
+              "name": "Tokyo Night Moon"
+            },
+            {
+              "kind": "terminalThemes",
+              "name": "Tokyo Night Day"
+            }
+          ],
+          "images": {
+            "cover": {
+              "path": "images/cover-1.1.0.png",
+              "alt": "Tokyo Night for Orca: the plugin name and its four styles beside Orca's editor, cut into one diagonal slice per style",
+              "sha256": "7b9357418b2a5af385b602678817f7281d88dad66a378c287a8b911377ed4ff5",
+              "width": 1600,
+              "height": 1000
+            }
+          }
+        },
+        {
           "version": "1.0.0",
           "commit": "2d63b93d40ccad1274286ed0643f71a979a66190",
           "contentHash": "46359c7cdecc8bc6b338d1facd24643626a93938343e9ae30f6ef0465aad7d2e",
