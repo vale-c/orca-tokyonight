@@ -60,7 +60,7 @@
   },
   "capabilities": [],
   "cover": {
-    "path": "images/cover.png",
-    "alt": "Orca in the four Tokyo Night styles, Night, Storm, Moon and Day, each showing the sidebar and syntax-highlighted TypeScript"
+    "path": "images/cover-1.1.0.png",
+    "alt": "Orca in Tokyo Night, with the workspace sidebar, syntax-highlighted TypeScript in the editor and git status colors in the file explorer"
   }
 }
