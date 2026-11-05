@@ -1,4 +1,5 @@
-// Copies the computed Tokyo Night palettes and terminal colors out of a tokyonight.nvim checkout.
+// Copies the computed Tokyo Night palettes, terminal colors and delta diff tints out of a
+// tokyonight.nvim checkout.
 // Usage: node scripts/vendor-palette.mjs /path/to/tokyonight.nvim
 // Writes scripts/tokyonight-palette.json. Run it only to move to a newer upstream commit.
 import { execFileSync } from 'node:child_process'
@@ -57,6 +58,19 @@ function ghostty(style) {
   }
 }
 
+/** extras/delta/tokyonight_<style>.gitconfig: the tints delta paints behind changed characters. */
+function delta(style) {
+  const source = readFileSync(path.join(upstream, 'extras', 'delta', `tokyonight_${style}.gitconfig`), 'utf8')
+  const emph = (side) => {
+    const match = new RegExp(`^\\s*${side}-emph-style\\s*= syntax "(#[0-9a-f]{6})"$`, 'm').exec(source)
+    if (!match) {
+      throw new Error(`${style}: delta has no ${side}-emph-style`)
+    }
+    return match[1]
+  }
+  return { add: emph('plus'), delete: emph('minus') }
+}
+
 const commit = execFileSync('git', ['-C', upstream, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim()
 const out = { repository: 'https://github.com/folke/tokyonight.nvim', commit }
 for (const [style, dark] of Object.entries(STYLES)) {
@@ -68,7 +82,7 @@ for (const [style, dark] of Object.entries(STYLES)) {
       throw new Error(`${style}: ghostty ${name} ${terminal[name]} differs from extras/lua ${colors.terminal[name]}`)
     }
   }
-  out[style] = { dark, colors, terminal }
+  out[style] = { dark, colors, terminal, delta: delta(style) }
 }
 writeFileSync(path.join(import.meta.dirname, 'tokyonight-palette.json'), `${JSON.stringify(out, null, 2)}\n`)
 console.log(`Vendored ${Object.keys(STYLES).join(', ')} from ${commit}.`)

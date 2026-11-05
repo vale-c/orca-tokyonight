@@ -113,6 +113,10 @@
       "brightMagenta": "#c7a9ff",
       "brightCyan": "#a4daff",
       "brightWhite": "#c0caf5"
+    },
+    "delta": {
+      "add": "#2c5a66",
+      "delete": "#713137"
     }
   },
   "storm": {
@@ -227,6 +231,10 @@
       "brightMagenta": "#c7a9ff",
       "brightCyan": "#a4daff",
       "brightWhite": "#c0caf5"
+    },
+    "delta": {
+      "add": "#316172",
+      "delete": "#763842"
     }
   },
   "moon": {
@@ -341,6 +349,10 @@
       "brightMagenta": "#caabff",
       "brightCyan": "#b2ebff",
       "brightWhite": "#c8d3f5"
+    },
+    "delta": {
+      "add": "#305f6f",
+      "delete": "#6b2e43"
     }
   },
   "day": {
@@ -455,6 +467,10 @@
       "brightMagenta": "#a463ff",
       "brightCyan": "#007ea8",
       "brightWhite": "#3760bf"
+    },
+    "delta": {
+      "add": "#95bec7",
+      "delete": "#d59a9d"
     }
   }
 }
