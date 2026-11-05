@@ -4,7 +4,7 @@
   "id": "tokyonight",
   "publisher": "vale-c",
   "name": "Tokyo Night for Orca",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "execution": "data",
   "description": "App and terminal themes in all four Tokyo Night styles, Night, Storm, Moon and Day, with matching syntax colors.",
   "license": "MIT",
