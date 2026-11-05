@@ -1,6 +1,46 @@
 [
   {
     "theme": "tokyonight-night",
+    "kind": "app",
+    "name": "--tab-inactive-foreground",
+    "source": "dark5 at 80% on bg",
+    "upstream": "#616789",
+    "shipped": "#8289ad"
+  },
+  {
+    "theme": "tokyonight-night",
+    "kind": "app",
+    "name": "--diff-added",
+    "source": "git.add",
+    "upstream": "#449dab",
+    "shipped": "#49a2b0"
+  },
+  {
+    "theme": "tokyonight-night",
+    "kind": "app",
+    "name": "--diff-removed",
+    "source": "git.delete",
+    "upstream": "#914c54",
+    "shipped": "#ba7178"
+  },
+  {
+    "theme": "tokyonight-night",
+    "kind": "app",
+    "name": "--git-decoration-deleted",
+    "source": "git.delete",
+    "upstream": "#914c54",
+    "shipped": "#955058"
+  },
+  {
+    "theme": "tokyonight-night",
+    "kind": "app",
+    "name": "--git-decoration-ignored",
+    "source": "git.ignore",
+    "upstream": "#545c7e",
+    "shipped": "#5b6385"
+  },
+  {
+    "theme": "tokyonight-night",
     "kind": "syntax",
     "name": "Comments",
     "source": "comment",
@@ -17,6 +57,54 @@
   },
   {
     "theme": "tokyonight-storm",
+    "kind": "app",
+    "name": "--tab-inactive-foreground",
+    "source": "dark5 at 80% on bg",
+    "upstream": "#636a8d",
+    "shipped": "#8991b5"
+  },
+  {
+    "theme": "tokyonight-storm",
+    "kind": "app",
+    "name": "--diff-added",
+    "source": "git.add",
+    "upstream": "#449dab",
+    "shipped": "#5eb6c4"
+  },
+  {
+    "theme": "tokyonight-storm",
+    "kind": "app",
+    "name": "--diff-added-emphasis",
+    "source": "delta.add",
+    "upstream": "#316172",
+    "shipped": "#2c5c6d"
+  },
+  {
+    "theme": "tokyonight-storm",
+    "kind": "app",
+    "name": "--diff-removed",
+    "source": "git.delete",
+    "upstream": "#914c54",
+    "shipped": "#cd8289"
+  },
+  {
+    "theme": "tokyonight-storm",
+    "kind": "app",
+    "name": "--git-decoration-deleted",
+    "source": "git.delete",
+    "upstream": "#914c54",
+    "shipped": "#a05a61"
+  },
+  {
+    "theme": "tokyonight-storm",
+    "kind": "app",
+    "name": "--git-decoration-ignored",
+    "source": "git.ignore",
+    "upstream": "#545c7e",
+    "shipped": "#646d90"
+  },
+  {
+    "theme": "tokyonight-storm",
     "kind": "syntax",
     "name": "Comments",
     "source": "comment",
@@ -30,6 +118,22 @@
     "source": "git.delete",
     "upstream": "#914c54",
     "shipped": "#a65e66"
+  },
+  {
+    "theme": "tokyonight-moon",
+    "kind": "app",
+    "name": "--tab-inactive-foreground",
+    "source": "dark5 at 80% on bg",
+    "upstream": "#63698c",
+    "shipped": "#8a91b6"
+  },
+  {
+    "theme": "tokyonight-moon",
+    "kind": "app",
+    "name": "--git-decoration-ignored",
+    "source": "git.ignore",
+    "upstream": "#545c7e",
+    "shipped": "#626b8d"
   },
   {
     "theme": "tokyonight-moon",
@@ -94,6 +198,118 @@
     "source": "fg",
     "upstream": "#3760bf",
     "shipped": "#274eab"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "app",
+    "name": "--tab-active-foreground",
+    "source": "fg",
+    "upstream": "#3760bf",
+    "shipped": "#3058b7"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "app",
+    "name": "--tab-inactive-foreground",
+    "source": "dark5 at 80% on bg",
+    "upstream": "#8087a9",
+    "shipped": "#565c7c"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "app",
+    "name": "--text-link",
+    "source": "blue1",
+    "upstream": "#188092",
+    "shipped": "#006e80"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "app",
+    "name": "--diff-added-background",
+    "source": "diff.add",
+    "upstream": "#b7ced5",
+    "shipped": "#d0e7ee"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "app",
+    "name": "--diff-added",
+    "source": "git.add",
+    "upstream": "#4197a4",
+    "shipped": "#0b717d"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "app",
+    "name": "--diff-added-emphasis",
+    "source": "delta.add",
+    "upstream": "#95bec7",
+    "shipped": "#c0ebf4"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "app",
+    "name": "--diff-removed-background",
+    "source": "diff.delete",
+    "upstream": "#dababe",
+    "shipped": "#fcdbdf"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "app",
+    "name": "--diff-removed",
+    "source": "git.delete",
+    "upstream": "#c47981",
+    "shipped": "#9d555e"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "app",
+    "name": "--diff-removed-emphasis",
+    "source": "diff.delete",
+    "upstream": "#dababe",
+    "shipped": "#fcdbdf"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "app",
+    "name": "--git-decoration-added",
+    "source": "git.add",
+    "upstream": "#4197a4",
+    "shipped": "#29828f"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "app",
+    "name": "--git-decoration-deleted",
+    "source": "git.delete",
+    "upstream": "#c47981",
+    "shipped": "#ab626b"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "app",
+    "name": "--git-decoration-untracked",
+    "source": "git.add",
+    "upstream": "#4197a4",
+    "shipped": "#29828f"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "app",
+    "name": "--git-decoration-copied",
+    "source": "git.add",
+    "upstream": "#4197a4",
+    "shipped": "#29828f"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "app",
+    "name": "--git-decoration-ignored",
+    "source": "git.ignore",
+    "upstream": "#8990b3",
+    "shipped": "#6f7597"
   },
   {
     "theme": "tokyonight-day",

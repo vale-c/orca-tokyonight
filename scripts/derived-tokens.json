@@ -1,0 +1,15 @@
+{
+  "--worktree-sidebar": "Follows --sidebar, bg_sidebar from NormalSB. Upstream has one sidebar color for every sidebar plugin (nvim-tree, neo-tree), so the workspace list sits on it too.",
+  "--worktree-sidebar-foreground": "Follows --sidebar-foreground, fg_sidebar from NormalSB, for the same reason as --worktree-sidebar.",
+  "--worktree-sidebar-accent": "Follows --sidebar-accent, bg_highlight from CursorLine, upstream's hovered-row fill in every sidebar.",
+  "--worktree-sidebar-accent-foreground": "Follows --sidebar-accent-foreground, the text on CursorLine.",
+  "--worktree-sidebar-border": "Follows --sidebar-border, border from WinSeparator.",
+  "--worktree-sidebar-ring": "Follows --sidebar-ring, upstream's one focus color: blue, and fg in Day.",
+  "--worktree-sidebar-active": "Night and Storm set it to bg_visual, QuickFixLine's fill for the current item of a list. In Moon and Day the sidebar text, fg_sidebar, is under 4.5:1 on bg_visual and on every other upstream selection fill, so Orca's translucent wash of the sidebar text marks the current row.",
+  "--worktree-sidebar-active-border": "Upstream draws no border around the current item of a list. Orca's faint mix of the sidebar border keeps the fill as the main cue.",
+  "--host-badge": "Upstream has no execution-host badge. Orca builds it from --accent, bg_highlight from CursorLine, the fill upstream uses for highlighted items.",
+  "--host-badge-foreground": "Follows --muted-foreground, fg_sidebar, upstream's secondary text.",
+  "--chat-user-message": "Night, Storm and Moon set it to bg_dark, the userMessageBg of upstream's extras/pi agent theme. Day's fg is under 4.5:1 on bg_dark and on every other Day fill darker than bg, so Day keeps Orca's own message fill.",
+  "--diff-added-gutter": "Upstream paints no gutter fill: gitsigns draws a git.add sign on the plain sign column. Orca tints --diff-added, git.add, for the gutter, which keeps that hue.",
+  "--diff-removed-gutter": "Upstream paints no gutter fill: gitsigns draws a git.delete sign on the plain sign column. Orca tints --diff-removed, git.delete, for the gutter, which keeps that hue."
+}

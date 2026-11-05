@@ -2,7 +2,12 @@
 // Usage: node scripts/build.mjs           write {themes,terminal}/*.json and scripts/deviations.json
 //        node scripts/build.mjs --check   exit 1 if a committed file differs from the output
 // Each mapping names an upstream color. A trailing note names the tokyonight.nvim highlight group
-// it comes from (lua/tokyonight/groups/*.lua) when the row is not self-evident.
+// it comes from (lua/tokyonight/groups/*.lua), or the extra (lua/tokyonight/extra/*.lua), when the
+// row is not self-evident.
+// A mapping is a palette color, or { role | blend, alpha, readable, min, mixedWith, percent }:
+// `blend` mixes a palette color into bg at `alpha` with upstream's Util.blend_bg, and `readable`
+// steps OKLCH lightness until the color (or `mixedWith` mixed `percent`% into it) and each listed
+// token or palette color are at `min` (default 4.5:1) contrast.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
@@ -42,7 +47,38 @@ const APP_TOKENS = {
   '--sidebar-accent': 'bg_highlight',
   '--sidebar-accent-foreground': 'fg',
   '--sidebar-border': 'border', // WinSeparator
-  '--sidebar-ring': 'blue'
+  '--sidebar-ring': 'blue',
+  '--worktree-sidebar-active': 'bg_visual', // QuickFixLine: the current item of a list
+  '--tab-bar': { blend: 'bg_highlight', alpha: 0.8 }, // barbar BufferTabpageFill
+  '--tab-active': 'bg', // barbar BufferCurrent
+  '--tab-active-foreground': { role: 'fg', readable: ['--tab-active', '--tab-inactive'] }, // BufferCurrent
+  '--tab-active-indicator': 'git.change', // bufferline BufferLineIndicatorSelected
+  '--tab-inactive': { blend: 'bg_highlight', alpha: 0.4 }, // barbar BufferInactive
+  '--tab-inactive-foreground': { blend: 'dark5', alpha: 0.8, readable: ['--tab-inactive'] }, // BufferInactive
+  // Why fg_gutter, not WinSeparator's border: border is 1.05:1 on bg, so split editors would show
+  // no edge. fg_gutter is upstream's guide-line color, as for --border.
+  '--split-divider': 'fg_gutter',
+  '--split-divider-hover': 'border_highlight', // FloatBorder: upstream's highlighted border
+  '--chat-user-message': 'bg_dark', // extras/pi userMessageBg
+  '--text-link': { role: 'teal', readable: ['--editor-surface'] }, // @markup.link, extras/pi mdLink
+  // Why mixedWith: Orca writes chat diff text as --foreground mixed 30% into this hue, on the line
+  // tint, so the hue steps until that text reads.
+  '--diff-added': { role: 'git.add', readable: ['--diff-added-background'], mixedWith: '--foreground', percent: 30 }, // GitSignsAdd, delta line-numbers-plus-style
+  '--diff-added-background': { role: 'diff.add', readable: ['--foreground'] }, // DiffAdd, delta plus-style
+  '--diff-added-emphasis': { role: 'delta.add', readable: ['--foreground'] }, // delta plus-emph-style
+  '--diff-removed': { role: 'git.delete', readable: ['--diff-removed-background'], mixedWith: '--foreground', percent: 30 }, // GitSignsDelete
+  '--diff-removed-background': { role: 'diff.delete', readable: ['--foreground'] }, // DiffDelete, delta minus-style
+  '--diff-removed-emphasis': { role: 'delta.delete', readable: ['--foreground'] }, // delta minus-emph-style
+  // nvim-tree: NvimTreeGitNew, NvimTreeGitDirty, NvimTreeGitDeleted; ignored is the palette's
+  // git.ignore and renamed is extras/eza git.renamed. Upstream has no copied color, and a copy is a
+  // new path, which NvimTreeGitNew marks with git.add.
+  '--git-decoration-added': { role: 'git.add', readable: ['--sidebar'], min: 3 },
+  '--git-decoration-modified': { role: 'git.change', readable: ['--sidebar'], min: 3 },
+  '--git-decoration-deleted': { role: 'git.delete', readable: ['--sidebar'], min: 3 },
+  '--git-decoration-renamed': { role: 'blue1', readable: ['--sidebar'], min: 3 },
+  '--git-decoration-untracked': { role: 'git.add', readable: ['--sidebar'], min: 3 },
+  '--git-decoration-copied': { role: 'git.add', readable: ['--sidebar'], min: 3 },
+  '--git-decoration-ignored': { role: 'git.ignore', readable: ['--sidebar'], min: 3 }
 }
 
 const SYNTAX = [
@@ -154,12 +190,23 @@ const brightKey = (name) => `bright${name[0].toUpperCase()}${name.slice(1)}`
 const CURSOR_ACCENT = 'bg' // Cursor: fg = bg; ghostty does not set it
 
 // Day's fg is 4.52:1 on bg, so every darker Day surface puts fg, fg_sidebar and black under 4.5:1.
-// A role can step its OKLCH lightness until it reads on the named surfaces, chroma and hue kept.
-const darkened = (role, surfaces) => ({ role, surfaces })
-const DAY_TEXT = darkened('fg', ['bg_float', 'bg_popup', 'bg_highlight', 'bg_sidebar'])
-const DAY_MUTED = darkened('fg_sidebar', ['bg', 'bg_statusline', 'bg_sidebar'])
+const DAY_TEXT = { role: 'fg', readable: ['bg_float', 'bg_popup', 'bg_highlight', 'bg_sidebar'] }
+const DAY_MUTED = { role: 'fg_sidebar', readable: ['bg', 'bg_statusline', 'bg_sidebar'] }
+// null leaves the token to Orca (scripts/derived-tokens.json says why).
+// Why: Moon's and Day's sidebar text is under 4.5:1 on every upstream selection fill.
+const NO_ACTIVE_ROW = { '--worktree-sidebar-active': null }
 const OVERRIDES = {
+  moon: NO_ACTIVE_ROW,
   day: {
+    ...NO_ACTIVE_ROW,
+    // Why: Day's fg is under 4.5:1 on every surface darker than bg, so no upstream fill for the
+    // user's chat message reads.
+    '--chat-user-message': null,
+    // Why blue1, @markup.link.label: Day's teal leaves sRGB before it reaches 4.5:1 on bg.
+    '--text-link': { role: 'blue1', readable: ['--editor-surface'] },
+    // Why diff.delete: Day's tints must be lighter than bg for fg to read, and delta's darker pink
+    // leaves sRGB before it gets there.
+    '--diff-removed-emphasis': { role: 'diff.delete', readable: ['--foreground'] },
     '--card-foreground': DAY_TEXT,
     '--popover-foreground': DAY_TEXT,
     '--secondary-foreground': DAY_TEXT,
@@ -189,22 +236,46 @@ const CONTRAST_PAIRS = [
   ['--accent', '--accent-foreground'],
   ['--sidebar', '--sidebar-foreground'],
   ['--sidebar-primary', '--sidebar-primary-foreground'],
-  ['--sidebar-accent', '--sidebar-accent-foreground']
+  ['--sidebar-accent', '--sidebar-accent-foreground'],
+  ['--worktree-sidebar-active', '--sidebar-foreground'],
+  ['--tab-active', '--tab-active-foreground'],
+  ['--tab-inactive', '--tab-inactive-foreground'],
+  ['--tab-inactive', '--tab-active-foreground'],
+  ['--diff-added-background', '--foreground'],
+  ['--diff-added-emphasis', '--foreground'],
+  ['--diff-removed-background', '--foreground'],
+  ['--diff-removed-emphasis', '--foreground'],
+  ['--editor-surface', '--text-link']
 ]
 const RINGS = [
   ['--ring', '--background'],
-  ['--sidebar-ring', '--sidebar']
+  ['--sidebar-ring', '--sidebar'],
+  ['--tab-active-indicator', '--tab-active']
 ]
+const GIT_DECORATIONS = ['added', 'modified', 'deleted', 'renamed', 'untracked', 'copied', 'ignored']
+const MIN_STATUS_CONTRAST = 3
 const MIN_TEXT_CONTRAST = 4.5
 const MIN_RING_CONTRAST = 2
 const MIN_SYNTAX_CONTRAST = 3
 // Why above Orca's floors: margin so rounding in another color pipeline cannot tip a shade under.
-const TEXT_TARGET = 4.55
-const SYNTAX_TARGET = 3.05
+const MARGIN = 0.05
 
 const parseHex = (hex) => [1, 3, 5].map((index) => parseInt(hex.slice(index, index + 2), 16))
 const toHex = (rgb) =>
   `#${rgb.map((c) => Math.round(Math.min(255, Math.max(0, c))).toString(16).padStart(2, '0')).join('')}`
+
+/** tokyonight.nvim's Util.blend: `alpha` of `foreground` over `background`, per sRGB channel. */
+function blend(foreground, alpha, background) {
+  const [fg, bg] = [parseHex(foreground), parseHex(background)]
+  const channel = (index) => Math.floor(Math.min(Math.max(0, alpha * fg[index] + (1 - alpha) * bg[index]), 255) + 0.5)
+  return `#${[0, 1, 2].map((index) => channel(index).toString(16).padStart(2, '0')).join('')}`
+}
+
+/** CSS `color-mix(in srgb, a percent%, b)`, as Orca derives a token. */
+function mix(a, percent, b) {
+  const [x, y] = [parseHex(a), parseHex(b)]
+  return toHex([0, 1, 2].map((index) => (x[index] * percent + y[index] * (100 - percent)) / 100))
+}
 
 function luminance(hex) {
   const [r, g, b] = parseHex(hex).map((value) => {
@@ -247,11 +318,14 @@ function oklabToHex([L, a, b]) {
   )
 }
 
-/** Steps OKLCH lightness away from the backgrounds (a, b unchanged keeps chroma and hue). */
-function readableOn(hex, backgrounds, dark, target) {
+/**
+ * Steps OKLCH lightness away from the other colors (a, b unchanged keeps chroma and hue) until
+ * `seen(color)`, the color as Orca paints it, reads on each of them.
+ */
+function readableOn(hex, backgrounds, target, seen = (color) => color) {
   const [L, a, b] = hexToOklab(hex)
-  const step = dark ? 0.001 : -0.001
-  const worst = (color) => Math.min(...backgrounds.map((background) => contrast(color, background)))
+  const step = luminance(seen(hex)) >= luminance(backgrounds[0]) ? 0.001 : -0.001
+  const worst = (color) => Math.min(...backgrounds.map((background) => contrast(seen(color), background)))
   let shipped = hex
   for (let next = L; worst(shipped) < target; next += step) {
     if (next < 0 || next > 1) {
@@ -263,45 +337,79 @@ function readableOn(hex, backgrounds, dark, target) {
 }
 
 function buildStyle(style, adjustments) {
-  const { dark, colors, terminal } = PALETTE[style]
+  const { dark, colors, terminal, delta } = PALETTE[style]
+  const palette = { ...colors, delta }
   const color = (name) => {
-    const hex = name.split('.').reduce((node, key) => node?.[key], colors)
+    const hex = name.split('.').reduce((node, key) => node?.[key], palette)
     if (typeof hex !== 'string' || !/^#[0-9a-f]{6}$/i.test(hex)) {
       throw new Error(`${style}: unknown palette color "${name}"`)
     }
     return hex.toLowerCase()
   }
-  const resolve = (key, fallback) => {
-    const mapping = OVERRIDES[style]?.[key] ?? fallback
-    if (typeof mapping === 'string') {
-      return color(mapping)
+  const bg = color('bg')
+  // Why: proves this blend is upstream's, since delta.add is Util.blend_bg(green2, 0.45) upstream.
+  if (blend(color('green2'), 0.45, bg) !== color('delta.add')) {
+    throw new Error(`${style}: Util.blend_bg(green2, 0.45) is not extras/delta's ${color('delta.add')}`)
+  }
+
+  const mappings = { ...APP_TOKENS, ...OVERRIDES[style] }
+  const tokens = {}
+  const resolve = (token) => {
+    if (token in tokens) {
+      return tokens[token]
     }
-    const upstream = color(mapping.role)
-    const surfaces = mapping.surfaces.map(color)
-    const shipped = readableOn(upstream, surfaces, dark, TEXT_TARGET)
-    const ratio = Math.min(...surfaces.map((surface) => contrast(shipped, surface)))
-    adjustments.push({ style, kind: 'app', name: key, role: mapping.role, upstream, shipped, ratio, floor: MIN_TEXT_CONTRAST })
+    const mapping = mappings[token]
+    if (!mapping) {
+      throw new Error(`${style}: ${token} is not set by this style`)
+    }
+    const spec = typeof mapping === 'string' ? { role: mapping } : mapping
+    const role = spec.blend ? `${spec.blend} at ${spec.alpha * 100}% on bg` : spec.role
+    const upstream = spec.blend ? blend(color(spec.blend), spec.alpha, bg) : color(spec.role)
+    let shipped = upstream
+    if (spec.readable) {
+      const floor = spec.min ?? MIN_TEXT_CONTRAST
+      const surfaces = spec.readable.map((name) => (name.startsWith('--') ? resolve(name) : color(name)))
+      const seen = spec.mixedWith ? (hex) => mix(resolve(spec.mixedWith), spec.percent, hex) : (hex) => hex
+      shipped = readableOn(upstream, surfaces, floor + MARGIN, seen)
+      if (shipped !== upstream) {
+        const ratio = Math.min(...surfaces.map((surface) => contrast(seen(shipped), surface)))
+        adjustments.push({ style, kind: 'app', name: token, role, upstream, shipped, ratio, floor })
+      }
+    }
+    tokens[token] = shipped
     return shipped
   }
-  const bg = color('bg')
+  const ordered = Object.keys(mappings).filter((token) => mappings[token] !== null)
+  for (const token of ordered) {
+    resolve(token)
+  }
+  const appTokens = Object.fromEntries(ordered.map((token) => [token, tokens[token]]))
 
-  const tokens = Object.fromEntries(Object.entries(APP_TOKENS).map(([token, name]) => [token, resolve(token, name)]))
   for (const [surface, text] of CONTRAST_PAIRS) {
-    const ratio = contrast(tokens[surface], tokens[text])
+    if (!(surface in appTokens && text in appTokens)) {
+      continue
+    }
+    const ratio = contrast(appTokens[surface], appTokens[text])
     if (ratio < MIN_TEXT_CONTRAST) {
       throw new Error(`${style}: ${surface}/${text} is ${ratio.toFixed(2)}:1, under ${MIN_TEXT_CONTRAST}:1`)
     }
   }
   for (const [ring, surface] of RINGS) {
-    const ratio = contrast(tokens[ring], tokens[surface])
+    const ratio = contrast(appTokens[ring], appTokens[surface])
     if (ratio < MIN_RING_CONTRAST) {
       throw new Error(`${style}: ${ring}/${surface} is ${ratio.toFixed(2)}:1, under ${MIN_RING_CONTRAST}:1`)
+    }
+  }
+  for (const status of GIT_DECORATIONS) {
+    const ratio = contrast(appTokens[`--git-decoration-${status}`], appTokens['--sidebar'])
+    if (ratio < MIN_STATUS_CONTRAST) {
+      throw new Error(`${style}: --git-decoration-${status} is ${ratio.toFixed(2)}:1 on --sidebar, under ${MIN_STATUS_CONTRAST}:1`)
     }
   }
 
   const syntaxHex = (rule, role) => {
     const upstream = color(role)
-    const shipped = readableOn(upstream, [bg], dark, SYNTAX_TARGET)
+    const shipped = readableOn(upstream, [bg], MIN_SYNTAX_CONTRAST + MARGIN)
     if (shipped !== upstream) {
       const ratio = contrast(shipped, bg)
       adjustments.push({ style, kind: 'syntax', name: rule, role, upstream, shipped, ratio, floor: MIN_SYNTAX_CONTRAST })
@@ -329,7 +437,7 @@ function buildStyle(style, adjustments) {
   }
 
   return {
-    [`themes/tokyonight-${style}.json`]: { base: dark ? 'dark' : 'light', tokens, tokenColors },
+    [`themes/tokyonight-${style}.json`]: { base: dark ? 'dark' : 'light', tokens: appTokens, tokenColors },
     [`terminal/tokyonight-${style}.json`]: terminalTheme
   }
 }
