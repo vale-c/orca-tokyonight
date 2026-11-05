@@ -113,31 +113,34 @@ node scripts/build.mjs           # regenerate the theme files from scripts/tokyo
 node scripts/build.mjs --check   # exit 1 if a committed file is out of date
 ```
 
-The build fails when an app token pair is under Orca's contrast floor. It prints every color it
-adjusted in OKLCH lightness.
+The build fails when an app token pair is under Orca's contrast floor. It writes every color it
+changed in OKLCH lightness to `scripts/deviations.json`.
 
 `scripts/tokyonight-palette.json` is copied from a tokyonight.nvim checkout. To move to a newer
 upstream commit, run `node scripts/vendor-palette.mjs /path/to/tokyonight.nvim`, then rebuild.
 
-To check the themes with Orca's own runtime code, point `ORCA_DIR` at an Orca checkout with its
-dependencies installed:
+To check the themes with Orca's own code, point `ORCA_DIR` at an Orca checkout after
+`pnpm install` and `pnpm run build:packages`:
 
 ```sh
 ORCA_DIR=/path/to/orca node scripts/verify.mjs
-cd /path/to/orca && node config/scripts/validate-plugin-files.mjs /path/to/orca-tokyonight
+ORCA_DIR=/path/to/orca node scripts/coverage.mjs
+cd /path/to/orca && pnpm validate:plugin /path/to/orca-tokyonight
 ```
 
-`verify.mjs` fails when Orca would drop a theme token or a syntax color, or reject a terminal theme.
+- `verify.mjs` fails when Orca would drop a theme token or a syntax color, or reject a theme
+  file. It prints `scripts/deviations.json` as a table and fails when a row changes more than
+  lightness.
+- `coverage.mjs` fails when a public Orca theme token is neither set by every style nor listed
+  in `scripts/derived-tokens.json` with the reason Orca's own value is right.
 
-`scripts/orca-e2e/tokyonight-theme.spec.ts` drives a real Orca build. It loads the plugin,
-selects each style, and checks the applied app tokens and editor token colors.
-It opens a small demo project, `atlas`, created under `TOKYONIGHT_DEMO_DIR` and deleted afterwards,
-and saves an editor and a terminal screenshot per style. The cover and `docs/screenshots` are made
-from them. Copy it into the Orca checkout's `tests/e2e/` and run:
+`scripts/theme.spec.ts` drives a real Orca build. It loads the plugin, selects each style, checks
+the painted app tokens and editor colors, and saves the cover and an editor and a terminal
+screenshot per style. Copy it into the Orca checkout's `tests/e2e/` and run from there:
 
 ```sh
-TOKYONIGHT_PLUGIN_DIR=/path/to/orca-tokyonight TOKYONIGHT_SHOTS_DIR=/tmp/shots TOKYONIGHT_DEMO_DIR=/tmp \
-  npx playwright test tests/e2e/tokyonight-theme.spec.ts --config tests/playwright.config.ts --project=electron-headless
+ORCA_THEME_PLUGIN_DIR=/path/to/orca-tokyonight ORCA_THEME_SHOTS_DIR=/tmp/tokyonight-shots \
+  npx playwright test tests/e2e/theme.spec.ts --config tests/playwright.config.ts --project=electron-headless
 ```
 
 ## Release
@@ -147,8 +150,7 @@ Orca's plugin directory lists the newest `vX.Y.Z` tag. To release a change:
 1. Bump `version` in `orca-plugin.json` and commit.
 2. Run the Orca validator on this folder. It prints the release entry for that commit.
 3. Paste that entry first in `releases` in `orca-catalog.json`, and commit.
-4. Validate the catalog with
-   `node config/scripts/validate-plugin-files.mjs /path/to/orca-tokyonight/orca-catalog.json`.
+4. Run the validator again. It must print `ok` for both files.
 5. Commit, then push the tag: `git tag v1.0.0 && git push origin main v1.0.0`.
 
 `orca-catalog.json` is what **From a Git URL…** reads.

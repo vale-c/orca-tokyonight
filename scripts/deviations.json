@@ -1,0 +1,138 @@
+[
+  {
+    "theme": "tokyonight-night",
+    "kind": "syntax",
+    "name": "Comments",
+    "source": "comment",
+    "upstream": "#565f89",
+    "shipped": "#5c6690"
+  },
+  {
+    "theme": "tokyonight-night",
+    "kind": "syntax",
+    "name": "Deleted",
+    "source": "git.delete",
+    "upstream": "#914c54",
+    "shipped": "#9a545c"
+  },
+  {
+    "theme": "tokyonight-storm",
+    "kind": "syntax",
+    "name": "Comments",
+    "source": "comment",
+    "upstream": "#565f89",
+    "shipped": "#67719c"
+  },
+  {
+    "theme": "tokyonight-storm",
+    "kind": "syntax",
+    "name": "Deleted",
+    "source": "git.delete",
+    "upstream": "#914c54",
+    "shipped": "#a65e66"
+  },
+  {
+    "theme": "tokyonight-moon",
+    "kind": "syntax",
+    "name": "Invalid",
+    "source": "error",
+    "upstream": "#c53b53",
+    "shipped": "#c73d54"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "app",
+    "name": "--card-foreground",
+    "source": "fg",
+    "upstream": "#3760bf",
+    "shipped": "#274eab"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "app",
+    "name": "--popover-foreground",
+    "source": "fg",
+    "upstream": "#3760bf",
+    "shipped": "#274eab"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "app",
+    "name": "--secondary-foreground",
+    "source": "fg",
+    "upstream": "#3760bf",
+    "shipped": "#274eab"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "app",
+    "name": "--muted-foreground",
+    "source": "fg_sidebar",
+    "upstream": "#6172b0",
+    "shipped": "#495994"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "app",
+    "name": "--accent-foreground",
+    "source": "fg",
+    "upstream": "#3760bf",
+    "shipped": "#274eab"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "app",
+    "name": "--sidebar-foreground",
+    "source": "fg_sidebar",
+    "upstream": "#6172b0",
+    "shipped": "#495994"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "app",
+    "name": "--sidebar-accent-foreground",
+    "source": "fg",
+    "upstream": "#3760bf",
+    "shipped": "#274eab"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "syntax",
+    "name": "Comments",
+    "source": "comment",
+    "upstream": "#848cb5",
+    "shipped": "#767ea6"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "syntax",
+    "name": "Builtin variables",
+    "source": "red",
+    "upstream": "#f52a65",
+    "shipped": "#f32764"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "syntax",
+    "name": "JSX tags",
+    "source": "red",
+    "upstream": "#f52a65",
+    "shipped": "#f32764"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "syntax",
+    "name": "Inserted",
+    "source": "git.add",
+    "upstream": "#4197a4",
+    "shipped": "#348b98"
+  },
+  {
+    "theme": "tokyonight-day",
+    "kind": "syntax",
+    "name": "Deleted",
+    "source": "git.delete",
+    "upstream": "#c47981",
+    "shipped": "#b56b73"
+  }
+]

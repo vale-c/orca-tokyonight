@@ -1,5 +1,5 @@
 // Generates the Tokyo Night app and terminal themes from the vendored palette.
-// Usage: node scripts/build.mjs           write {themes,terminal}/*.json
+// Usage: node scripts/build.mjs           write {themes,terminal}/*.json and scripts/deviations.json
 //        node scripts/build.mjs --check   exit 1 if a committed file differs from the output
 // Each mapping names an upstream color. A trailing note names the tokyonight.nvim highlight group
 // it comes from (lua/tokyonight/groups/*.lua) when the row is not self-evident.
@@ -280,7 +280,7 @@ function buildStyle(style, adjustments) {
     const surfaces = mapping.surfaces.map(color)
     const shipped = readableOn(upstream, surfaces, dark, TEXT_TARGET)
     const ratio = Math.min(...surfaces.map((surface) => contrast(shipped, surface)))
-    adjustments.push({ style, kind: 'text', role: mapping.role, upstream, shipped, ratio, floor: MIN_TEXT_CONTRAST })
+    adjustments.push({ style, kind: 'app', name: key, role: mapping.role, upstream, shipped, ratio, floor: MIN_TEXT_CONTRAST })
     return shipped
   }
   const bg = color('bg')
@@ -299,24 +299,20 @@ function buildStyle(style, adjustments) {
     }
   }
 
-  const syntaxColor = new Map()
-  const syntaxHex = (name) => {
-    if (!syntaxColor.has(name)) {
-      const upstream = color(name)
-      const shipped = readableOn(upstream, [bg], dark, SYNTAX_TARGET)
-      if (shipped !== upstream) {
-        const ratio = contrast(shipped, bg)
-        adjustments.push({ style, kind: 'syntax', role: name, upstream, shipped, ratio, floor: MIN_SYNTAX_CONTRAST })
-      }
-      syntaxColor.set(name, shipped)
+  const syntaxHex = (rule, role) => {
+    const upstream = color(role)
+    const shipped = readableOn(upstream, [bg], dark, SYNTAX_TARGET)
+    if (shipped !== upstream) {
+      const ratio = contrast(shipped, bg)
+      adjustments.push({ style, kind: 'syntax', name: rule, role, upstream, shipped, ratio, floor: MIN_SYNTAX_CONTRAST })
     }
-    return syntaxColor.get(name)
+    return shipped
   }
   const tokenColors = SYNTAX.map(({ name, role, fontStyle, scope }) => ({
     name,
     scope,
     settings: {
-      ...(role ? { foreground: syntaxHex(role) } : {}),
+      ...(role ? { foreground: syntaxHex(name, role) } : {}),
       ...(fontStyle !== undefined ? { fontStyle } : {})
     }
   }))
@@ -352,18 +348,23 @@ assertUniqueScopes()
 const adjustments = []
 const files = Object.assign({}, ...STYLES.map((style) => buildStyle(style, adjustments)))
 
-const rows = new Map()
-for (const row of adjustments) {
-  rows.set(`${row.style} ${row.kind} ${row.role}`, row)
-}
-console.log('Colors adjusted in OKLCH lightness only (text to 4.5:1 on its darkest surface, syntax to 3:1 on bg):')
-console.log('style  kind    role         upstream  shipped   ratio')
-for (const { style, kind, role, upstream, shipped, ratio } of rows.values()) {
-  console.log(`${style.padEnd(6)} ${kind.padEnd(7)} ${role.padEnd(12)} ${upstream}   ${shipped}   ${ratio.toFixed(2)}`)
+console.log('Colors changed in OKLCH lightness only (app text to 4.5:1 on its surfaces, syntax to 3:1 on bg):')
+console.log('style  kind    name                          role         upstream  shipped   ratio')
+for (const { style, kind, name, role, upstream, shipped, ratio } of adjustments) {
+  console.log(`${style.padEnd(6)} ${kind.padEnd(7)} ${name.padEnd(29)} ${role.padEnd(12)} ${upstream}   ${shipped}   ${ratio.toFixed(2)}`)
 }
 if (adjustments.some(({ ratio, floor }) => ratio < floor)) {
   throw new Error('an adjusted color is still under its contrast floor')
 }
+// Read by scripts/verify.mjs, which checks that each row ships and changes lightness only.
+files['scripts/deviations.json'] = adjustments.map(({ style, kind, name, role, upstream, shipped }) => ({
+  theme: `tokyonight-${style}`,
+  kind,
+  name,
+  source: role,
+  upstream,
+  shipped
+}))
 
 const check = process.argv.includes('--check')
 const stale = []
