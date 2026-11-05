@@ -10,7 +10,7 @@ Orca's official [Tokyo Night plugin](https://github.com/stablyai/orca-plugins/tr
 ports the VS Code theme's Night, Storm and Light. This plugin is built from tokyonight.nvim instead,
 adds the Moon and Day styles, and also colors diffs, git status, tabs and links.
 
-![Orca in Tokyo Night](images/cover-1.1.0.png)
+![Tokyo Night for Orca](images/cover-1.1.0.png)
 
 ## Styles
 
@@ -192,8 +192,10 @@ cd /path/to/orca && pnpm validate:plugin /path/to/orca-tokyonight
   in `scripts/derived-tokens.json` with the reason Orca's own value is right.
 
 `scripts/theme.spec.ts` drives a real Orca build. It loads the plugin, selects each style, checks
-the painted app tokens and editor colors, and saves the cover and an editor and a terminal
-screenshot per style. Copy it into the Orca checkout's `tests/e2e/` and run from there:
+the painted app tokens and editor colors, and saves an editor and a terminal screenshot per
+style. `scripts/cover.mjs` then composes the cover from those screenshots
+(`ORCA_DIR=/path/to/orca node scripts/cover.mjs . <shots dir> images/cover-<version>.png`).
+Copy the spec into the Orca checkout's `tests/e2e/` and run from there:
 
 ```sh
 ORCA_THEME_PLUGIN_DIR=/path/to/orca-tokyonight ORCA_THEME_SHOTS_DIR=/tmp/tokyonight-shots \

@@ -61,6 +61,6 @@
   "capabilities": [],
   "cover": {
     "path": "images/cover-1.1.0.png",
-    "alt": "Orca in Tokyo Night, with the workspace sidebar, syntax-highlighted TypeScript in the editor and git status colors in the file explorer"
+    "alt": "Tokyo Night for Orca: the plugin name and its four styles beside Orca's editor, cut into one diagonal slice per style"
   }
 }
